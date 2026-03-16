@@ -9,36 +9,45 @@ import historyRoutes from './routes/historyRoutes.js'
 // console.log("express is -", express)
 
 
-const app  = express()
+const app = express()
 
-// const cors = require("cors");
-
-app.use(cors({
+const corsOptions = {
   origin: [
     "http://localhost:5173",
     "https://test-my-api-wheat.vercel.app"
   ],
-  credentials: true
-}))
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}
+
+app.use(cors(corsOptions))
+app.options("*", cors(corsOptions)) // Handle preflight for all routes
 
 const PORT = process.env.PORT || 5000;
 
-// app.use(cors())
 app.use(express.json())
-app.use(express.urlencoded({extended : true}))
+app.use(express.urlencoded({ extended: true }))
 app.use('/api/auth', authRoutes)
 app.use('/api/history', historyRoutes)
 
-connectDB()
-
-
-app.get("/",(req,res)=>{
-    res.send("i am home page")
+app.get("/", (req, res) => {
+  res.send("i am home page")
 })
 
-app.listen(PORT,()=>{
-    console.log(`starteddd on port ${PORT}` ) 
-})
+const startServer = async () => {
+  try {
+    await connectDB()
+    app.listen(PORT, () => {
+      console.log(`starteddd on port ${PORT}`)
+    })
+  } catch (error) {
+    console.error("Failed to start server:", error)
+    process.exit(1)
+  }
+}
+
+startServer()
 
 
 
