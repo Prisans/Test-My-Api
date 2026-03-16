@@ -12,6 +12,8 @@ const PrivateRoute = ({ children }) => {
 function App() {
     return (
         <Router>
+            <h1></h1>
+            <div></div>
             <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
